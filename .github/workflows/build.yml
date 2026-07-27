@@ -22,13 +22,12 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Create Web Project Structure
+      - name: Install and Build Android
         run: |
-          mkdir www
+          mkdir -p www
           cp index.html www/
           npm init -y
           npm install @capacitor/core @capacitor/cli
-          npx cap init SuperBloklar com.oyun.superbloklar --web-dir www --yes
           npx cap add android
 
       - name: Build Android Bundle
