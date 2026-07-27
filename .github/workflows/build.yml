@@ -1,0 +1,37 @@
+name: Build Android App
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Create Web Project Structure
+        run: |
+          mkdir www
+          cp index.html www/
+          npm init -y
+          npm install @capacitor/core @capacitor/cli
+          npx cap init SuperBloklar com.oyun.superbloklar --web-dir www
+          npx cap add android
+
+      - name: Build Android Bundle
+        run: |
+          cd android
+          ./gradlew bundleRelease
+
+      - name: Upload AAB Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: app-release
+          path: android/app/build/outputs/bundle/release/app-release.aab
