@@ -32,13 +32,17 @@ jobs:
           npx cap init SuperBloklar com.oyun.superbloklar --web-dir www
           npx cap add android
 
-      - name: Fix Gradle Version for Java Compatibility
+      - name: Fix Gradle Version and Conflicts
         run: |
           echo "distributionBase=GRADLE_USER_HOME" > android/gradle/wrapper/gradle-wrapper.properties
           echo "distributionPath=wrapper/dists" >> android/gradle/wrapper/gradle-wrapper.properties
           echo "distributionUrl=https\://services.gradle.org/distributions/gradle-8.5-bin.zip" >> android/gradle/wrapper/gradle-wrapper.properties
           echo "zipStoreBase=GRADLE_USER_HOME" >> android/gradle/wrapper/gradle-wrapper.properties
           echo "zipStorePath=wrapper/dists" >> android/gradle/wrapper/gradle-wrapper.properties
+          
+          # Kotlin sürüm çakışmasını önlemek için gradle yapılandırmasına kural ekleyelim
+          echo "" >> android/app/build.gradle
+          echo "configurations.all { resolutionStrategy { force 'org.jetbrains.kotlin:kotlin-stdlib:1.8.22', 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.22', 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22' } }" >> android/app/build.gradle
 
       - name: Build Android Bundle
         run: |
@@ -51,4 +55,5 @@ jobs:
         with:
           name: app-release
           path: android/app/build/outputs/bundle/release/app-release.aab
+
 
