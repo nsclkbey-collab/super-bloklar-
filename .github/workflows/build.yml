@@ -22,12 +22,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install and Build Android
+      - name: Clean and Setup Project
         run: |
+          rm -rf android
           mkdir -p www
           cp index.html www/
-          npm init -y
+          npm init -y || true
           npm install @capacitor/core @capacitor/cli
+          npx cap init SuperBloklar com.oyun.superbloklar --web-dir www --yes
           npx cap add android
 
       - name: Build Android Bundle
@@ -41,3 +43,4 @@ jobs:
         with:
           name: app-release
           path: android/app/build/outputs/bundle/release/app-release.aab
+
